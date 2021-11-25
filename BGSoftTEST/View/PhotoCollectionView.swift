@@ -24,7 +24,7 @@ class PhotoCollectionView: UICollectionView {
         let cellWidth  = width  - (sideInset * 2)
         let cellHeight = height - (sideInset * 2)
         
-        layout.itemSize = CGSize(width: width, height: height)
+        layout.itemSize = CGSize(width: cellWidth, height: cellHeight)
         
         layout.scrollDirection = .horizontal
         

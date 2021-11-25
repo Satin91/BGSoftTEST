@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct PhotoObject {
+struct PhotoObject{
     var name : String
     var model: PhotoModel
 }

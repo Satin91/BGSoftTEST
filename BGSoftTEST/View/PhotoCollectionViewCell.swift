@@ -33,27 +33,25 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     }
     
     
+    
     func set(photo: PhotoObject) {
         let urlString = "http://dev.bgsoft.biz/task/" + photo.name + ".jpg"
         let photoURL = URL(string: urlString)!
         print(urlString)
-        self.photo.downloaded(from: photoURL)
-        if let filePath = Bundle.main.path(forResource: "imageName", ofType: "jpg"), let image = UIImage(contentsOfFile: filePath) {
-            //photo.contentMode = .scaleAspectFit
-            self.photo.image = image
+
+   
+        
+        
+        
+        let queue = DispatchQueue.global(qos:.utility)
+        queue.async {
+            guard let imageData = try? Data(contentsOf: photoURL) else { return }
+
+            DispatchQueue.main.async {
+                self.image = UIImage(data: imageData)!
+            }
+
         }
-        
-        
-        
-//        let queue = DispatchQueue.global(qos:.utility)
-//        queue.async {
-//            guard let imageData = try? Data(contentsOf: photoURL) else { return }
-//
-//            DispatchQueue.main.async {
-//                self.image = UIImage(data: imageData)!
-//            }
-//
-//        }
         
    
         
@@ -68,23 +66,4 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     }
 }
 
-extension UIImageView {
-    func downloaded(from url: URL, contentMode mode: ContentMode = .scaleAspectFit) {
-        contentMode = mode
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard
-                let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
-                let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
-                let data = data, error == nil,
-                let image = UIImage(data: data)
-                else { return }
-            DispatchQueue.main.async() { [weak self] in
-                self?.image = image
-            }
-        }.resume()
-    }
-    func downloaded(from link: String, contentMode mode: ContentMode = .scaleAspectFit) {
-        guard let url = URL(string: link) else { return }
-        downloaded(from: url, contentMode: mode)
-    }
-}
+
