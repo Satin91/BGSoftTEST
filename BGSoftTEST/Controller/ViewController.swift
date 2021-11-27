@@ -36,11 +36,11 @@ class ViewController: UIViewController {
         URLSession.shared.dataTask(with: url, completionHandler: completion).resume()
     }
     func downloadImage(from url: URL,name: String, model: PhotoModel) {
-        print("Download Started")
+   //     print("Download Started")
         getData(from: url) { data, response, error in
             guard let data = data, error == nil else { return }
-            print(response?.suggestedFilename ?? url.lastPathComponent)
-            print("Download Finished")
+       //     print(response?.suggestedFilename ?? url.lastPathComponent)
+      //      print("Download Finished")
             // always update the UI from the main thread
             DispatchQueue.main.async() { [weak self] in
                 guard let self = self else { return }
@@ -55,7 +55,7 @@ class ViewController: UIViewController {
     }
    
     func getPhotos() {
-        //var returnedObject: [PhotoObject] = []
+        var modelForSorted: [PhotoModel] = []
         do {
             if let file = URL(string: "http://dev.bgsoft.biz/task/credits.json") {
                 let data = try Data(contentsOf: file)
@@ -63,13 +63,17 @@ class ViewController: UIViewController {
                 if let object = json as? [String: Any] {
               
                     for dict in object {
-                        // Пригодится
-                      //  let imageURLString = "http://dev.bgsoft.biz/task/" + dict.key + ".jpg"
-                        //let imageURL = URL(string: imageURLString)
-                        let photoModel = PhotoModel(dictionary: dict.value as! [String:Any])
-                        downloadImage(from: imageURL!, name: dict.key, model: photoModel)
+                        let photoModel = PhotoModel(dictionary: dict.value as! [String:Any], name: dict.key, image: nil)
+                        modelForSorted.append(photoModel)
+                    //    downloadImage(from: imageURL!, name: dict.key, model: photoModel)
                         print(photos)
                         print("url is \(photos.count)")
+                    }
+                    modelForSorted.sort{ model1, model2 in
+                        return model1.user_name > model2.user_name
+                    }
+                    for model in modelForSorted {
+                        
                     }
                 }
             } else {
