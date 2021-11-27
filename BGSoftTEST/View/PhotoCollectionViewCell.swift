@@ -9,18 +9,22 @@ import UIKit
 
 class PhotoCollectionViewCell: UICollectionViewCell {
     
-    var photo: UIImageView!
-    static let identifier = "PhotoCell"
-    private var image : UIImage {
-        get  {
-            guard let image = photo.image  else {
-                return UIImage(systemName: "trash")!
-            }
-            return image
-        } set {
-            self.photo.image = newValue
+    var photo: UIImageView! {
+        didSet {
+            print("DidSe")
         }
     }
+    static let identifier = "PhotoCell"
+//    private var image : UIImage {
+//        get  {
+//            guard let image = photo.image  else {
+//                return UIImage(systemName: "trash")!
+//            }
+//            return image
+//        } set {
+//            self.photo.image = newValue
+//        }
+//    }
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .lightGray
@@ -29,7 +33,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     }
     override func prepareForReuse() {
         super.prepareForReuse()
-        image = UIImage(systemName: "trash")!
+      //  image = UIImage(systemName: "trash")!
     }
     
     

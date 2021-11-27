@@ -12,9 +12,9 @@ enum Section {
 }
 
 class PhotoObject: Hashable {
-    var name : String
-    var model: PhotoModel
-    var image: UIImage
+    var name : String!
+    var model: PhotoModel!
+    var image: UIImage!
     let url: URL!
     let identifier = UUID()
     func hash(into hasher: inout Hasher) {

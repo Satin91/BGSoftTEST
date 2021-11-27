@@ -27,14 +27,16 @@ class PhotoStorage {
                         let dc2 = PhotoModel(dictionary: dict.value as! [String:Any])
                         let imageURLString = "http://dev.bgsoft.biz/task/" + dict.key + ".jpg"
                         let imageURL = URL(string: imageURLString)
-                        guard let imageData = try? Data(contentsOf: imageURL!) else { continue }
-                        let object = PhotoObject(name: dict.key, model: dc2, image: UIImage(data: imageData)!, url: imageURL!)
+                     //   guard let imageData = try? Data(contentsOf: imageURL!) else { continue }
+                        let object = PhotoObject(name: dict.key, model: dc2, image: ImageCache.publicCache.placeholderImage, url: imageURL!)
+                  
+                      
+                        
+                        
+                        
+                        
                         photos.append(object)
-                        print(imageData)
-                        returnedObject.append(object)
-                        
                         print(object.name)
-                        
                     }
                 }
             } else {
@@ -45,7 +47,6 @@ class PhotoStorage {
       //  return returnedObject
     }
     
-    var photos = [PhotoObject]()
     
 }
 //mutating func getImage() {

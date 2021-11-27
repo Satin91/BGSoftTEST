@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let _ = self.photoStorage.getPhotos() // получение массива структур со всеми данными
+    //    let _ = self.photoStorage.getPhotos() // получение массива структур со всеми данными
         setupCollectionView()
         self.view.backgroundColor = .systemRed
     }
@@ -46,8 +46,14 @@ class ViewController: UIViewController {
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
         }
         //collectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
-        collectionView.delegate   = self
-        collectionView.dataSource = self
+//        collectionView.delegate   = self
+//        collectionView.dataSource = self
+        photoStorage.getPhotos(photos: &photos)
+        
+        var initialSnapshot = NSDiffableDataSourceSnapshot<Section, PhotoObject>()
+        initialSnapshot.appendSections([.main])
+        initialSnapshot.appendItems(self.photos)
+        self.dataSource.apply(initialSnapshot, animatingDifferences: true)
     }
 }
 
