@@ -10,6 +10,7 @@ import UIKit
 class ViewController: UIViewController {
 
     var collectionView: PhotoCollectionView!
+   // var dataSource: UICollectionViewDiffableDataSource<Section, Item>! = nil
     let photoStorage = PhotoStorage()
     var store: [PhotoObject] = []
     // Фото для того чтобы они не обновлялись постоянно при скроле
@@ -56,10 +57,10 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionViewCell.identifier, for: indexPath) as! PhotoCollectionViewCell
-        let object = store[indexPath.row]
-        let image  = self.images[indexPath.row]
-        cell.photo.image = image
-      //  cell.set(photo: object)
+        var object = store[indexPath.row]
+//        let image  = self.images[indexPath.row]
+      //  cell.photo.image = image
+        cell.set(photo: object)
         return cell
     }
     

@@ -41,17 +41,17 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 
    
         
-        
-        
-        let queue = DispatchQueue.global(qos:.utility)
-        queue.async {
-            guard let imageData = try? Data(contentsOf: photoURL) else { return }
-
-            DispatchQueue.main.async {
-                self.image = UIImage(data: imageData)!
-            }
-
-        }
+//        
+//        
+//        let queue = DispatchQueue.global(qos:.utility)
+//        queue.async {
+//            guard let imageData = try? Data(contentsOf: photoURL) else { return }
+//
+//            DispatchQueue.main.async {
+//                self.image = UIImage(data: imageData)!
+//            }
+//
+//        }
         
    
         
