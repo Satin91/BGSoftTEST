@@ -1,0 +1,32 @@
+//
+//  PhotoModel.swift
+//  BGSoftTEST
+//
+//  Created by Артур on 25.11.21.
+//
+
+import UIKit
+
+
+class PhotoModel: NSObject {
+    
+    var name : String = ""
+    var colors: [String] = []
+    var image: UIImage? = nil
+    var photo_url: String = ""
+    var user_name: String = ""
+    var user_url:  String = ""
+    
+    init(dictionary: [String: Any], name: String) {
+        self.colors    = dictionary["colors"] as? [String] ?? []
+        self.photo_url = dictionary["photo_url"] as? String ?? ""
+        self.user_name = dictionary["user_name"] as? String ?? ""
+        self.user_url  = dictionary["user_url"] as? String ?? ""
+        self.name      = name
+    }
+}
+
+
+
+
+
