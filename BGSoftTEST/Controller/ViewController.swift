@@ -63,8 +63,9 @@ class ViewController: UIViewController {
                 if let object = json as? [String: Any] {
               
                     for dict in object {
-                        let imageURLString = "http://dev.bgsoft.biz/task/" + dict.key + ".jpg"
-                        let imageURL = URL(string: imageURLString)
+                        // Пригодится
+                      //  let imageURLString = "http://dev.bgsoft.biz/task/" + dict.key + ".jpg"
+                        //let imageURL = URL(string: imageURLString)
                         let photoModel = PhotoModel(dictionary: dict.value as! [String:Any])
                         downloadImage(from: imageURL!, name: dict.key, model: photoModel)
                         print(photos)
