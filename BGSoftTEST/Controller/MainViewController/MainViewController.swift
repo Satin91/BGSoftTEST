@@ -19,13 +19,12 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         getPhotos() 
         setupCollectionView()
-        self.view.backgroundColor = .systemRed
     }
     
     func setupCollectionView() {
         collectionView = PhotoCollectionView(frame: self.view.bounds)
         self.view.addSubview(collectionView)
-        collectionView.backgroundColor = .gray
+        collectionView.backgroundColor = .white
         collectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
         collectionView.delegate   = self
         collectionView.dataSource = self
@@ -67,6 +66,7 @@ class MainViewController: UIViewController {
 }
 
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return photos.count

@@ -19,10 +19,13 @@ class PhotoCollectionView: UICollectionView {
     func setupLayout() {
         let width = self.bounds.width
         let height = self.bounds.height
-        layout.itemSize = CGSize(width: width, height: height)
+        let sideInset: CGFloat = 30
+        let cellWidth = width - (sideInset * 2)
+        let cellHeight = height - (sideInset * 6)
+        layout.itemSize = CGSize(width: cellWidth, height: cellHeight)
         layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 0//sideInset * 2
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        layout.minimumLineSpacing = sideInset * 2
+        layout.sectionInset = UIEdgeInsets(top: sideInset, left: sideInset, bottom: sideInset, right: sideInset)
     }
     func setupCollectionView() {
         self.collectionViewLayout = layout

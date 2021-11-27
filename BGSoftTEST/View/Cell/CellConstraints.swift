@@ -15,6 +15,7 @@ extension PhotoCollectionViewCell {
         self.userLinkButton.translatesAutoresizingMaskIntoConstraints = false
         self.stackView.translatesAutoresizingMaskIntoConstraints = false
         self.label.translatesAutoresizingMaskIntoConstraints = false
+        self.photo.translatesAutoresizingMaskIntoConstraints = false
         stackView.addArrangedSubview(photoLinkButton)
         stackView.addArrangedSubview(userLinkButton)
         stackView.distribution = .fillEqually
@@ -29,10 +30,13 @@ extension PhotoCollectionViewCell {
             stackView.heightAnchor.constraint(equalToConstant: 70),
            
             // label constraints
-            label.topAnchor.constraint(equalTo: self.topAnchor,constant: 50),
+            label.topAnchor.constraint(equalTo: self.topAnchor,constant: 30),
             label.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 30),
             label.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: -30),
-            
+            // photo constraints
+            photo.heightAnchor.constraint(equalTo: self.heightAnchor),
+            photo.widthAnchor.constraint(equalTo: self.widthAnchor),
         ])
+        self.imageCenterXLayoutConstraint = NSLayoutConstraint(item: photo!, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0.0)
     }
 }

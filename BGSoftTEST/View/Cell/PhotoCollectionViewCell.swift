@@ -8,9 +8,9 @@
 import UIKit
 
 class PhotoCollectionViewCell: UICollectionViewCell{
-   
+    
     static let identifier = "PhotoCell"
-   
+    
     var photo: UIImageView!
     var stackView = UIStackView()
     var linkDelegate: FollowTheLink!
@@ -23,18 +23,26 @@ class PhotoCollectionViewCell: UICollectionViewCell{
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
+    var imageCenterXLayoutConstraint: NSLayoutConstraint!
+    var parallaxOffset: CGFloat = 0 {
+        didSet {
+            imageCenterXLayoutConstraint.constant = parallaxOffset
+        }
+    }
+    
+
     
     var userLinkButton: UIButton!
     var photoLinkButton: UIButton!
     
     var userLink: String? {
         willSet {
-            self.userLinkButton.setTitle(newValue, for: .normal)
+            userLinkButton.setTitle(newValue, for: .normal)
         }
     }
     var photoLink: String? {
         willSet {
-            self.photoLinkButton.setTitle(newValue, for: .normal)
+            photoLinkButton.setTitle(newValue, for: .normal)
         }
     }
     
@@ -45,17 +53,17 @@ class PhotoCollectionViewCell: UICollectionViewCell{
         setupView()
         constraints()
     }
-   
+    
     func setupButtons() {
-        self.userLinkButton = UIButton(frame: .zero)
-        self.userLinkButton.addTarget(self, action: #selector(followTheUserLink(_:)), for: .touchUpInside)
-        self.userLinkButton.titleLabel?.font = .systemFont(ofSize: 10)
-        self.userLinkButton.setTitleColor(.white, for: .normal)
+        userLinkButton = UIButton(frame: .zero)
+        userLinkButton.addTarget(self, action: #selector(followTheUserLink(_:)), for: .touchUpInside)
+        userLinkButton.titleLabel?.font = .systemFont(ofSize: 10)
+        userLinkButton.setTitleColor(.white, for: .normal)
         
-        self.photoLinkButton = UIButton(frame: .zero)
-        self.photoLinkButton.addTarget(self, action: #selector(followThePhotoLink(_:)), for: .touchUpInside)
-        self.photoLinkButton.titleLabel?.font = .systemFont(ofSize: 10)
-        self.photoLinkButton.setTitleColor(.white, for: .normal)
+        photoLinkButton = UIButton(frame: .zero)
+        photoLinkButton.addTarget(self, action: #selector(followThePhotoLink(_:)), for: .touchUpInside)
+        photoLinkButton.titleLabel?.font = .systemFont(ofSize: 10)
+        photoLinkButton.setTitleColor(.white, for: .normal)
     }
     
     @objc func followTheUserLink(_ button: UIButton) {
@@ -69,16 +77,35 @@ class PhotoCollectionViewCell: UICollectionViewCell{
     }
     
     func setupView() {
-        self.addSubview(photo)
-        self.addSubview(label)
-        self.addSubview(userLinkButton)
-        self.addSubview(stackView)
-        self.clipsToBounds = true
+        addSubview(photo)
+        addSubview(label)
+        addSubview(userLinkButton)
+        addSubview(stackView)
+        
+    }
+    func setShadow() {
+        layer.shadowColor   = UIColor.black.cgColor
+        layer.shadowOffset  = CGSize(width: 0, height: 0)
+        layer.shadowRadius  = 10
+        layer.shadowOpacity = 0.4
+    }
+    func setupImageView() {
+        photo = UIImageView(frame: .zero)
+        photo.contentMode = .scaleAspectFill
+        photo.layer.cornerRadius = 26
+        photo.clipsToBounds = true
+    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        setShadow()
     }
     
-    func setupImageView() {
-        self.photo = UIImageView(frame: self.bounds)
-        self.photo.contentMode = .scaleAspectFill
+    func updateParallaxOffset(collectionView bounds: CGRect) {
+        let center = CGPoint(x: bounds.midX, y: bounds.maxY)
+        let offsetFromCenter = CGPoint(x: center.x - self.center.x, y: center.y - self.center.y)
+        let maximumHorizontalOffset = bounds.width / 2 + self.bounds.width / 2
+        let scaleFactor = 40 / maximumHorizontalOffset
+        parallaxOffset = -offsetFromCenter.y * scaleFactor 
     }
     
     required init?(coder: NSCoder) {
