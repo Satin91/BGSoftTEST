@@ -11,7 +11,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     
     var photo: UIImageView!
     static let identifier = "PhotoCell"
-    var image : UIImage {
+    private var image : UIImage {
         get  {
             guard let image = photo.image  else {
                 return UIImage(systemName: "trash")!

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7532EE3D2751FFE0009ABCA2 /* Cashe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7532EE3C2751FFE0009ABCA2 /* Cashe.swift */; };
+		7532EE3F27520043009ABCA2 /* ImageURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7532EE3E27520043009ABCA2 /* ImageURLProtocol.swift */; };
 		75DA96CF274FAA8200E337A1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DA96CE274FAA8200E337A1 /* AppDelegate.swift */; };
 		75DA96D1274FAA8200E337A1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DA96D0274FAA8200E337A1 /* SceneDelegate.swift */; };
 		75DA96D3274FAA8200E337A1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DA96D2274FAA8200E337A1 /* ViewController.swift */; };
@@ -20,6 +22,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7532EE3C2751FFE0009ABCA2 /* Cashe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cashe.swift; sourceTree = "<group>"; };
+		7532EE3E27520043009ABCA2 /* ImageURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageURLProtocol.swift; sourceTree = "<group>"; };
 		75DA96CB274FAA8100E337A1 /* BGSoftTEST.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BGSoftTEST.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75DA96CE274FAA8200E337A1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75DA96D0274FAA8200E337A1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -67,6 +71,8 @@
 				75DA96CE274FAA8200E337A1 /* AppDelegate.swift */,
 				75DA96D0274FAA8200E337A1 /* SceneDelegate.swift */,
 				75DA96E9274FBA7C00E337A1 /* PhotoStorage.swift */,
+				7532EE3C2751FFE0009ABCA2 /* Cashe.swift */,
+				7532EE3E27520043009ABCA2 /* ImageURLProtocol.swift */,
 				75DA96EB274FECFE00E337A1 /* PhotoModel.swift */,
 				75DA96E7274FB1E100E337A1 /* Controller */,
 				75DA96E6274FB1D400E337A1 /* View */,
@@ -176,8 +182,10 @@
 			files = (
 				75DA96EA274FBA7C00E337A1 /* PhotoStorage.swift in Sources */,
 				75DA96D3274FAA8200E337A1 /* ViewController.swift in Sources */,
+				7532EE3D2751FFE0009ABCA2 /* Cashe.swift in Sources */,
 				75DA96E5274FB1CB00E337A1 /* PhotoCollectionViewCell.swift in Sources */,
 				75DA96E3274FAFE800E337A1 /* PhotoCollectionView.swift in Sources */,
+				7532EE3F27520043009ABCA2 /* ImageURLProtocol.swift in Sources */,
 				75DA96EC274FECFE00E337A1 /* PhotoModel.swift in Sources */,
 				75DA96CF274FAA8200E337A1 /* AppDelegate.swift in Sources */,
 				75DA96D1274FAA8200E337A1 /* SceneDelegate.swift in Sources */,

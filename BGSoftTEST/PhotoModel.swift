@@ -7,13 +7,36 @@
 
 import UIKit
 
-
-struct PhotoObject{
-    var name : String
-    var model: PhotoModel
+enum Section {
+    case main
 }
 
-struct PhotoModel: CustomStringConvertible, Hashable {
+class PhotoObject: Hashable {
+    var name : String
+    var model: PhotoModel
+    var image: UIImage
+    let url: URL!
+    let identifier = UUID()
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+    }
+    static func == (lhs: PhotoObject, rhs: PhotoObject) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+    
+    init(name: String, model: PhotoModel,image: UIImage, url: URL ) {
+        self.name = name
+        self.image = image
+        self.model = model
+        self.url = url
+    }
+    
+  
+    
+    
+}
+
+struct PhotoModel: CustomStringConvertible {
     var colors: [String]
     let photo_url: String
     let user_name: String

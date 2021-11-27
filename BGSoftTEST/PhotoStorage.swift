@@ -14,13 +14,10 @@ import UIKit
 
 class PhotoStorage {
     
-    
-
-    
     var images: [UIImage] = []
     
-    func getPhotos() -> [PhotoObject] {
-        var returnedObject: [PhotoObject] = []
+    func getPhotos(photos: inout [PhotoObject]) {
+        //var returnedObject: [PhotoObject] = []
         do {
             if let file = URL(string: "http://dev.bgsoft.biz/task/credits.json") {
                 let data = try Data(contentsOf: file)
@@ -28,13 +25,16 @@ class PhotoStorage {
                 if let object = json as? [String: Any] {
                     for dict in object {
                         let dc2 = PhotoModel(dictionary: dict.value as! [String:Any])
-                        let object = PhotoObject(name: dict.key, model: dc2)
+                        let imageURLString = "http://dev.bgsoft.biz/task/" + dict.key + ".jpg"
+                        let imageURL = URL(string: imageURLString)
+                        guard let imageData = try? Data(contentsOf: imageURL!) else { continue }
+                        let object = PhotoObject(name: dict.key, model: dc2, image: UIImage(data: imageData)!, url: imageURL!)
+                        photos.append(object)
+                        print(imageData)
                         returnedObject.append(object)
-                        let imageURL = "http://dev.bgsoft.biz/task/" + dict.key + ".jpg"
-                            let imagerrr = URL(string: imageURL)
                         
                         print(object.name)
-                      
+                        
                     }
                 }
             } else {
@@ -42,11 +42,11 @@ class PhotoStorage {
         } catch {
             print(error.localizedDescription)
         }
-        return returnedObject
+      //  return returnedObject
     }
     
     var photos = [PhotoObject]()
-
+    
 }
 //mutating func getImage() {
 //    let imageURL = "http://dev.bgsoft.biz/task/" + name + ".jpg"
