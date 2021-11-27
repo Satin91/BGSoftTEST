@@ -9,15 +9,16 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    var collectionView: PhotoCollectionView!
-    var dataSource: UICollectionViewDiffableDataSource<Section,PhotoObject>! = nil
-    let photoStorage = PhotoStorage()
-    private var photos  = [PhotoObject]()
     
+    var collectionView: PhotoCollectionView!
+    let photoStorage = PhotoStorage()
+    
+    var dataSource: UICollectionViewDataSource!
+    private var photos  = [PhotoObject]()
+    private var photos2 = [UIImage]()
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-    //    let _ = self.photoStorage.getPhotos() // получение массива структур со всеми данными
+        getPhotos()
         setupCollectionView()
         self.view.backgroundColor = .systemRed
     }
@@ -27,50 +28,95 @@ class ViewController: UIViewController {
         collectionView = PhotoCollectionView(frame: self.view.bounds)
         self.view.addSubview(collectionView)
         collectionView.backgroundColor = .gray
-        
-        let cellRegistration = PhotoCollectionView.CellRegistration<PhotoCollectionViewCell,PhotoObject> { (cell, indexPath, item) in
-            cell.photo.image = item.image
-            ImageCache.publicCache.load(url: item.url as NSURL, item: item) { fetchedPhoto, image in
-                guard let image = image, image != fetchedPhoto.image else { return }
-                var updatedSnapshot = self.dataSource.snapshot()
-                if let datasourceIndex = updatedSnapshot.indexOfItem(fetchedPhoto) {
-                    let item = self.photos[datasourceIndex]
-                    item.image = image
-                    updatedSnapshot.reloadItems([item])
-                    self.dataSource.apply(updatedSnapshot, animatingDifferences: true)
-                }
+        collectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
+        collectionView.delegate   = self
+        collectionView.dataSource = self
+    }
+    func getData(from url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
+        URLSession.shared.dataTask(with: url, completionHandler: completion).resume()
+    }
+    func downloadImage(from url: URL,name: String, model: PhotoModel) {
+        print("Download Started")
+        getData(from: url) { data, response, error in
+            guard let data = data, error == nil else { return }
+            print(response?.suggestedFilename ?? url.lastPathComponent)
+            print("Download Finished")
+            // always update the UI from the main thread
+            DispatchQueue.main.async() { [weak self] in
+                guard let self = self else { return }
+                guard let image = UIImage(data: data) else { return }
+                self.photos.append(PhotoObject(name: name, model: model, image: image))
+            //    self.photos2.append(image)
+                self.collectionView.reloadData()
+
+                print(image)
             }
         }
-        dataSource = UICollectionViewDiffableDataSource<Section, PhotoObject>(collectionView: collectionView) {
-            (collectionView: UICollectionView, indexPath: IndexPath, item: PhotoObject) -> UICollectionViewCell? in
-            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
-        }
-        //collectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
-//        collectionView.delegate   = self
-//        collectionView.dataSource = self
-        photoStorage.getPhotos(photos: &photos)
-        
-        var initialSnapshot = NSDiffableDataSourceSnapshot<Section, PhotoObject>()
-        initialSnapshot.appendSections([.main])
-        initialSnapshot.appendItems(self.photos)
-        self.dataSource.apply(initialSnapshot, animatingDifferences: true)
     }
+   
+    func getPhotos() {
+        //var returnedObject: [PhotoObject] = []
+        do {
+            if let file = URL(string: "http://dev.bgsoft.biz/task/credits.json") {
+                let data = try Data(contentsOf: file)
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                if let object = json as? [String: Any] {
+              
+                    for dict in object {
+                        let imageURLString = "http://dev.bgsoft.biz/task/" + dict.key + ".jpg"
+                        let imageURL = URL(string: imageURLString)
+                        let photoModel = PhotoModel(dictionary: dict.value as! [String:Any])
+                        downloadImage(from: imageURL!, name: dict.key, model: photoModel)
+                        print(photos)
+                        print("url is \(photos.count)")
+                    }
+                }
+            } else {
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    var indexpath: IndexPath?
+    
 }
 
-extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDataSourcePrefetching {
     
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        //Begin asynchronously fetching data for the requested index paths.
+        
+//
+//        for indexPath in indexPaths {
+//            guard let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return }
+//            print(indexPath.row)
+//
+//            //let model = models[indexPath.row]
+//            //asyncFetcher.fetchAsync(model.identifier)
+//        }
+    }
+    
+    
+    
+    //    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+    //
+    //    }
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return photos.count
     }
-    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        collectionView.reloadData()
+        //collectionView.reloadItems(at: [self.indexpath!])
+    }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionViewCell.identifier, for: indexPath) as! PhotoCollectionViewCell
         var object = photos[indexPath.row]
+        self.indexpath = indexPath
         //        let image  = self.images[indexPath.row]
-        //  cell.photo.image = image
-        cell.set(photo: object)
+        cell.photo.image = object.image
+       // cell.set(photo: object)
         return cell
     }
     

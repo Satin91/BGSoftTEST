@@ -13,7 +13,7 @@ class PhotoCollectionView: UICollectionView {
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: self.layout)
-        setupLayout()
+        
         setupCollectionView()
     }
     
@@ -24,18 +24,21 @@ class PhotoCollectionView: UICollectionView {
         let cellWidth  = width  - (sideInset * 2)
         let cellHeight = height - (sideInset * 2)
         
-        layout.itemSize = CGSize(width: cellWidth, height: cellHeight)
+        layout.itemSize = CGSize(width: width, height: height)
         
         layout.scrollDirection = .horizontal
-        
-        layout.minimumLineSpacing = sideInset * 2
-        layout.sectionInset = UIEdgeInsets(top: sideInset, left: sideInset, bottom: sideInset, right: sideInset)
+//
+        layout.minimumLineSpacing = 0//sideInset * 2
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
     func setupCollectionView() {
         self.collectionViewLayout = layout
         self.isPagingEnabled = true
     }
-    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        setupLayout()
+    }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

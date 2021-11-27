@@ -7,13 +7,13 @@
 
 import UIKit
 
-class PhotoCollectionViewCell: UICollectionViewCell {
-    
-    var photo: UIImageView! {
-        didSet {
-            print("DidSe")
-        }
+class PhotoCollectionViewCell: UICollectionViewCell{
+    func openPhoto(photo: UIImage) {
+        self.photo.image = photo
     }
+    
+    
+    var photo: UIImageView!
     static let identifier = "PhotoCell"
 //    private var image : UIImage {
 //        get  {
@@ -42,8 +42,14 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         let urlString = "http://dev.bgsoft.biz/task/" + photo.name + ".jpg"
         let photoURL = URL(string: urlString)!
         print(urlString)
-
-   
+      //  photo.downloadImage(from: photoURL)
+     //   photo.openPhoto = self
+        
+        
+        DispatchQueue.main.async {
+            self.photo.image = photo.image
+        }
+        
         
 //        
 //        
