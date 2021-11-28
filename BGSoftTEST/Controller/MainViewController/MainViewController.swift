@@ -13,11 +13,11 @@ class MainViewController: UIViewController {
     
     var collectionView: PhotoCollectionView!
     let photoStorage = PhotoStorage()
-    var timer = Timer()
-    func scrollToFirstItem(animated: Bool) {
-        self.collectionView.scrollToItem(at: IndexPath(item: photos.count / 2 , section: 0), at: .centeredVertically, animated: animated)
-    }
     private var photos  = [PhotoModel]()
+    var timer = Timer()
+   
+    
+    
     var userIsSleeping = false {
         willSet {
             if newValue == false {
@@ -27,15 +27,8 @@ class MainViewController: UIViewController {
                 startTimer()
             }
         }
-          
     }
-    
-    func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 6.0, repeats: false, block: { timer in
-            self.scrollToFirstItem(animated: true)
-        })
-    }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
@@ -45,10 +38,14 @@ class MainViewController: UIViewController {
         scrollToFirstItem(animated: false)
         
     }
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("asdfasf")
+    func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 6.0, repeats: false, block: { timer in
+            self.scrollToFirstItem(animated: true)
+        })
     }
-
+    func scrollToFirstItem(animated: Bool) {
+        self.collectionView.scrollToItem(at: IndexPath(item: photos.count / 2 , section: 0), at: .centeredVertically, animated: animated)
+    }
     
     func setupCollectionView() {
         collectionView = PhotoCollectionView(frame: self.view.bounds)
