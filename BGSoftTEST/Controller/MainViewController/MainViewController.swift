@@ -54,10 +54,19 @@ class MainViewController: UIViewController {
         collectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
         collectionView.delegate   = self
         collectionView.dataSource = self
+        collectionView.prefetchDataSource = self
     }
+    
+    
 }
 
-extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDataSourcePrefetching {
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        for i in indexPaths {
+            
+        }
+    }
+    
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         userIsSleeping = false
@@ -65,6 +74,8 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             cell.parallax(offsetPoint: self.collectionView.contentOffset)
         }
     }
+    
+    
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         guard let indexPath = collectionView.indexPathsForVisibleItems.first else { return }
@@ -74,6 +85,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             scrollToFirstItem(animated: false)
         }
     }
+    
+    
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return photos.count

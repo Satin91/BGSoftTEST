@@ -10,24 +10,29 @@ import UIKit
 
 
 class PhotoStorage {
-    // Кэш для фотографий
+    
+    //: MARK: Кэш для фотографий
+    
     static var imageCashe = NSCache<AnyObject,AnyObject>()
-    // Создает задачу для загрузки изображений
+
+    //: MARK: Создает очередь для загрузки фотографий
+    
     fileprivate func getData(from url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
         URLSession.shared.dataTask(with: url, completionHandler: completion).resume()
     }
-    // Загружает фотографии из очереди
+    
+    //: MARK: Загружает фотографию
+    
     func loadPhoto(from url: String, completion: @escaping () -> Void) {
         guard let imageURL = URL(string: url) else { return }
-        let queue = DispatchQueue.global(qos: .userInitiated)
+        let queue = DispatchQueue.global(qos: .background)
         queue.async { [self] in
             if PhotoStorage.imageCashe.object(forKey: url as NSString) == nil {
                 
             getData(from: imageURL) { data, response, error in
                 guard let data = data, error == nil else { return }
+                guard let image = UIImage(data: data)?.resized(withPercentage: 0.5) else { return }
                 DispatchQueue.main.async() {
-                    
-                    guard let image = UIImage(data: data) else { return }
                     PhotoStorage.imageCashe.setObject(image as UIImage, forKey: url as NSString)
                 }
             }
@@ -35,7 +40,10 @@ class PhotoStorage {
         }
     }
     
-    // Возвращает массив с моделью для коллекции
+
+    
+    //MARK: Возвращает массиив с моделями фотографий
+    
     func getPhotos() -> [PhotoModel]{
         var sortedPhotoCollection: [PhotoModel] = []
         do {
@@ -68,8 +76,6 @@ class PhotoStorage {
         sortedPhotoCollection.append(sortedPhotoCollection.first!)
         return firstHalf + sortedPhotoCollection
     }
-    
-    
 }
 
 extension UIImageView {
@@ -83,7 +89,7 @@ extension UIImageView {
         DispatchQueue.global(qos: .userInteractive).async {  [weak self] in
             do {
                 let data = try Data(contentsOf: url)
-                let image = UIImage(data: data)
+                let image = UIImage(data: data)?.resized(withPercentage: 0.5)
                 DispatchQueue.main.async {
                     PhotoStorage.imageCashe.setObject(image!, forKey: imageUrl as NSString)
                     self?.image = image
@@ -99,3 +105,10 @@ extension UIImageView {
         }
     }
 }
+
+
+
+
+
+
+

@@ -12,6 +12,7 @@
 		7532EE4827525B99009ABCA2 /* CellConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7532EE4727525B99009ABCA2 /* CellConstraints.swift */; };
 		7532EE4E27526D06009ABCA2 /* OpenWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7532EE4D27526D06009ABCA2 /* OpenWebViewController.swift */; };
 		757BD93B2753F8030033C13C /* DropShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BD93A2753F8030033C13C /* DropShadow.swift */; };
+		757BD93D275441460033C13C /* ImageResizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757BD93C275441460033C13C /* ImageResizer.swift */; };
 		75D22E5027539BF1007D95CE /* ScaleLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D22E4F27539BF0007D95CE /* ScaleLayout.swift */; };
 		75DA96CF274FAA8200E337A1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DA96CE274FAA8200E337A1 /* AppDelegate.swift */; };
 		75DA96D1274FAA8200E337A1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DA96D0274FAA8200E337A1 /* SceneDelegate.swift */; };
@@ -31,6 +32,7 @@
 		7532EE4727525B99009ABCA2 /* CellConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellConstraints.swift; sourceTree = "<group>"; };
 		7532EE4D27526D06009ABCA2 /* OpenWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWebViewController.swift; sourceTree = "<group>"; };
 		757BD93A2753F8030033C13C /* DropShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropShadow.swift; sourceTree = "<group>"; };
+		757BD93C275441460033C13C /* ImageResizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageResizer.swift; sourceTree = "<group>"; };
 		75D22E4F27539BF0007D95CE /* ScaleLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleLayout.swift; sourceTree = "<group>"; };
 		75DA96CB274FAA8100E337A1 /* BGSoftTEST.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BGSoftTEST.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75DA96CE274FAA8200E337A1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -96,7 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				757BD93A2753F8030033C13C /* DropShadow.swift */,
-				75DA96E9274FBA7C00E337A1 /* PhotoStorage.swift */,
+				757BD93E275441690033C13C /* Storage */,
 				7532EE4327525A3C009ABCA2 /* FollowTheLinkProtocol.swift */,
 				7532EE4D27526D06009ABCA2 /* OpenWebViewController.swift */,
 			);
@@ -117,6 +119,15 @@
 				7532EE4527525AFB009ABCA2 /* WebViewController.swift */,
 			);
 			path = WebViewController;
+			sourceTree = "<group>";
+		};
+		757BD93E275441690033C13C /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				75DA96E9274FBA7C00E337A1 /* PhotoStorage.swift */,
+				757BD93C275441460033C13C /* ImageResizer.swift */,
+			);
+			path = Storage;
 			sourceTree = "<group>";
 		};
 		75DA96C2274FAA8100E337A1 = {
@@ -250,6 +261,7 @@
 			files = (
 				75DA96EA274FBA7C00E337A1 /* PhotoStorage.swift in Sources */,
 				75DA96D3274FAA8200E337A1 /* MainViewController.swift in Sources */,
+				757BD93D275441460033C13C /* ImageResizer.swift in Sources */,
 				7532EE4E27526D06009ABCA2 /* OpenWebViewController.swift in Sources */,
 				7532EE4827525B99009ABCA2 /* CellConstraints.swift in Sources */,
 				757BD93B2753F8030033C13C /* DropShadow.swift in Sources */,
