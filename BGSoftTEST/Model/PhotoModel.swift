@@ -8,14 +8,15 @@
 import UIKit
 
 
-struct PhotoModel {
+class PhotoModel {
     
     var name : String = ""
     var colors: [String] = []
-    var image: UIImage? = nil
+    var imageURL: String = ""
     var photo_url: String = ""
     var user_name: String = ""
     var user_url:  String = ""
+    var cellID = UUID().uuidString
     
     init(dictionary: [String: Any], name: String) {
         self.colors    = dictionary["colors"] as? [String] ?? []

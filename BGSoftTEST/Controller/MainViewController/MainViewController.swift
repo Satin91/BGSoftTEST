@@ -18,8 +18,9 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        getPhotos() 
         setupCollectionView()
+        getPhotos() 
+        
     }
     
     func setupCollectionView() {
@@ -46,16 +47,17 @@ class MainViewController: UIViewController {
                 }
                 // Сортировка по имени
                 modelForSorted.sort{ ($0.user_name < $1.user_name) }
-                
+
                 for model in modelForSorted {
                     let url = "http://dev.bgsoft.biz/task/" + model.name + ".jpg"
                     let imageUrl = URL(string: url)
-                    photoStorage.downloadImage(from: imageUrl!, model: model, completion: {
-                        self.photos.append(model)
-                        print(self.photos.count)
-                        self.collectionView.reloadData()
-                        print("Reload data")
-                    })
+                    photoStorage.downloadImage(from: imageUrl!) {
+                        print("Image did downloaded")
+                    }
+                    model.imageURL = url
+                    self.photos.append(model)
+                    print(self.photos.count)
+
                 }
             } else {
             }
@@ -68,15 +70,17 @@ class MainViewController: UIViewController {
 
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-       
-        guard let cell = collectionView.visibleCells.first as? PhotoCollectionViewCell else { return }
-      //  cell.updateParallaxOffset(collectionView: self.collectionView.bounds)
-        for i in collectionView.visibleCells {
-            guard let cell = i as? PhotoCollectionViewCell else { return }
-            cell.parallaxOffset += 0.5
-        }
-    }
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//
+//        guard let cell = collectionView.visibleCells.first as? PhotoCollectionViewCell else { return }
+//      //  cell.updateParallaxOffset(collectionView: self.collectionView.bounds)
+//        for i in collectionView.visibleCells {
+//            guard let cell = i as? PhotoCollectionViewCell else { return }
+//            cell.parallaxOffset += 0.5
+//        }
+//    }
+    
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return photos.count
     }
@@ -85,9 +89,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionViewCell.identifier, for: indexPath) as! PhotoCollectionViewCell
         let object        = photos[indexPath.row]
         cell.label.text   = object.user_name
-        cell.photo.image  = object.image
         cell.photoLink    = object.photo_url
         cell.userLink     = object.user_url
+        cell.set(object: object)
         cell.linkDelegate = self
         return cell
     }

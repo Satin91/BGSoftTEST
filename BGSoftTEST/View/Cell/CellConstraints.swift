@@ -34,13 +34,17 @@ extension PhotoCollectionViewCell {
             label.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 30),
             label.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: -30),
 //            // photo constraints
-            photo.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            photo.heightAnchor.constraint(equalToConstant: self.bounds.height),
-            photo.widthAnchor.constraint(equalToConstant: self.bounds.width + 500)
+           // photo.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            photo.topAnchor.constraint(equalTo: self.topAnchor),
+            photo.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            photo.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+          //  photo.heightAnchor.constraint(equalToConstant: self.bounds.height),
+        //    photo.widthAnchor.constraint(equalToConstant: self.bounds.width),
+            photo.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
-        self.imageCenterXLayoutConstraint = NSLayoutConstraint(item: photo!, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0.0)
-//      //  self.imageCenterXLayoutConstraint.constant = parallaxOffset
-        self.imageCenterXLayoutConstraint.isActive = true
+//        self.imageCenterXLayoutConstraint = NSLayoutConstraint(item: photo!, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0.0)
+////      //  self.imageCenterXLayoutConstraint.constant = parallaxOffset
+//        self.imageCenterXLayoutConstraint.isActive = true
         
     }
 }
