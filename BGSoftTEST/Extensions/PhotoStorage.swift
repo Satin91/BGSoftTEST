@@ -26,7 +26,7 @@ class PhotoStorage {
             getData(from: imageURL) { data, response, error in
                 guard let data = data, error == nil else { return }
                 DispatchQueue.main.async() {
-                    print(url)
+                    
                     guard let image = UIImage(data: data) else { return }
                     PhotoStorage.imageCashe.setObject(image as UIImage, forKey: url as NSString)
                 }
@@ -43,26 +43,30 @@ class PhotoStorage {
                 let data = try Data(contentsOf: file)
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
                 guard let object = json as? [String: Any] else { return [] }
-                
                 for dict in object {
                     let photoModel = PhotoModel(dictionary: dict.value as! [String:Any], name: dict.key)
                     sortedPhotoCollection.append(photoModel)
                 }
                 // Сортировка по имени
                 sortedPhotoCollection.sort{ ($0.user_name < $1.user_name) }
-
+                
                 for model in sortedPhotoCollection {
                     let url = "http://dev.bgsoft.biz/task/" + model.name + ".jpg"
                     self.loadPhoto(from: url) {
                     }
                     model.imageURL = url
                 }
+                
+                
             } else {
             }
         } catch {
             print(error.localizedDescription)
         }
-        return sortedPhotoCollection
+        let firstHalf = sortedPhotoCollection
+        // Добавляет первый элемент в конец массива для того, чтобы с него перешагнуть на первый ( такой же )
+        sortedPhotoCollection.append(sortedPhotoCollection.first!)
+        return firstHalf + sortedPhotoCollection
     }
     
     
