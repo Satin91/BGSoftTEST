@@ -24,8 +24,9 @@ class PhotoCollectionViewCell: UICollectionViewCell{
         return label
     }()
     var imageCenterXLayoutConstraint: NSLayoutConstraint!
+    
     var parallaxOffset: CGFloat = 0 {
-        didSet {
+        willSet {
             imageCenterXLayoutConstraint.constant = parallaxOffset
         }
     }
@@ -77,23 +78,25 @@ class PhotoCollectionViewCell: UICollectionViewCell{
     }
     
     func setupView() {
+        self.clipsToBounds = true
+        self.layer.cornerRadius = 26
         addSubview(photo)
         addSubview(label)
         addSubview(userLinkButton)
         addSubview(stackView)
         
     }
+    func setupImageView() {
+        photo = UIImageView(frame: self.bounds)
+        photo.contentMode = .scaleAspectFill
+        //photo.layer.cornerRadius = 26
+        //photo.clipsToBounds = false
+    }
     func setShadow() {
         layer.shadowColor   = UIColor.black.cgColor
         layer.shadowOffset  = CGSize(width: 0, height: 0)
         layer.shadowRadius  = 10
         layer.shadowOpacity = 0.4
-    }
-    func setupImageView() {
-        photo = UIImageView(frame: .zero)
-        photo.contentMode = .scaleAspectFill
-        photo.layer.cornerRadius = 26
-        photo.clipsToBounds = true
     }
     override func layoutSubviews() {
         super.layoutSubviews()

@@ -33,10 +33,14 @@ extension PhotoCollectionViewCell {
             label.topAnchor.constraint(equalTo: self.topAnchor,constant: 30),
             label.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 30),
             label.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: -30),
-            // photo constraints
-            photo.heightAnchor.constraint(equalTo: self.heightAnchor),
-            photo.widthAnchor.constraint(equalTo: self.widthAnchor),
+//            // photo constraints
+            photo.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            photo.heightAnchor.constraint(equalToConstant: self.bounds.height),
+            photo.widthAnchor.constraint(equalToConstant: self.bounds.width + 500)
         ])
         self.imageCenterXLayoutConstraint = NSLayoutConstraint(item: photo!, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0.0)
+//      //  self.imageCenterXLayoutConstraint.constant = parallaxOffset
+        self.imageCenterXLayoutConstraint.isActive = true
+        
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreMotion
 
 class MainViewController: UIViewController {
     
@@ -42,8 +43,6 @@ class MainViewController: UIViewController {
                 for dict in object {
                     let photoModel = PhotoModel(dictionary: dict.value as! [String:Any], name: dict.key)
                     modelForSorted.append(photoModel)
-                    print(modelForSorted.forEach({ Mode in
-                    }))
                 }
                 // Сортировка по имени
                 modelForSorted.sort{ ($0.user_name < $1.user_name) }
@@ -53,7 +52,9 @@ class MainViewController: UIViewController {
                     let imageUrl = URL(string: url)
                     photoStorage.downloadImage(from: imageUrl!, model: model, completion: {
                         self.photos.append(model)
+                        print(self.photos.count)
                         self.collectionView.reloadData()
+                        print("Reload data")
                     })
                 }
             } else {
@@ -67,7 +68,15 @@ class MainViewController: UIViewController {
 
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
-    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+       
+        guard let cell = collectionView.visibleCells.first as? PhotoCollectionViewCell else { return }
+      //  cell.updateParallaxOffset(collectionView: self.collectionView.bounds)
+        for i in collectionView.visibleCells {
+            guard let cell = i as? PhotoCollectionViewCell else { return }
+            cell.parallaxOffset += 0.5
+        }
+    }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return photos.count
     }

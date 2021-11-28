@@ -8,7 +8,7 @@
 import UIKit
 
 
-class PhotoModel: NSObject {
+struct PhotoModel {
     
     var name : String = ""
     var colors: [String] = []
@@ -24,6 +24,7 @@ class PhotoModel: NSObject {
         self.user_url  = dictionary["user_url"] as? String ?? ""
         self.name      = name
     }
+    
 }
 
 
