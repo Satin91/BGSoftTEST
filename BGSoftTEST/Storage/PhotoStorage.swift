@@ -54,7 +54,7 @@ class PhotoStorage {
                 }
                 // Сортировка по имени
                 sortedPhotoCollection.sort{ ($0.user_name < $1.user_name) }
-                Queue.PhotoLoading(.userInitiated) {
+                Queue.PhotoLoading(.background) {
                     for model in sortedPhotoCollection {
                         let url = "http://dev.bgsoft.biz/task/" + model.name + ".jpg"
                         self.loadPhoto(from: url) { image in

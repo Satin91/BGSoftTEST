@@ -28,16 +28,11 @@ class MainViewController: UIViewController {
             }
         }
     }
-    //MARK: Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
         photos = photoStorage.getPhotos()
-       
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         scrollToFirstItem(animated: false)
     }
     
