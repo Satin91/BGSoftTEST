@@ -14,12 +14,12 @@ class Queue {
     // MARK: Очередь для загрузки всех фото
     
     static func PhotoLoading(_ priority: DispatchQoS ,complition: @escaping @convention(block) () -> Void) {
-        DispatchQueue(label: labelIdentifier,qos: priority,attributes: [.concurrent]).sync(execute: complition)
+        DispatchQueue(label: labelIdentifier,qos: priority,attributes: [.concurrent]).async(execute: complition)
     }
     
     // MARK: Очередь для назначения фото в ячейку
     
     static func AssignPhotoToCell(_ priority: DispatchQoS ,complition: @escaping @convention(block) () -> Void) {
-        DispatchQueue(label: labelIdentifier,qos: priority,attributes: [.concurrent]).async(execute: complition)
+        DispatchQueue(label: labelIdentifier,qos: priority).async(execute: complition)
     }
 }
