@@ -78,9 +78,6 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             cell.parallax(offsetPoint: self.collectionView.contentOffset)
         }
     }
-    
-    
-    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         guard let indexPath = collectionView.indexPathsForVisibleItems.first else { return }
         collectionView.reloadData()
@@ -101,13 +98,13 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionViewCell.identifier, for: indexPath) as! PhotoCollectionViewCell
         let object = photos[indexPath.row]
-        
-        let imageVV = UIImageView()
-        imageVV.assignPhoto(imageUrl: object.imageURL) { _ in
-            collectionView.reloadData()
-        }
-        cell.photo.image = imageVV.image
-        cell.configure(object: object)
+//
+//        let imageVV = UIImageView()
+//        imageVV.assignPhoto(imageUrl: object.imageURL) { _ in
+//            collectionView.reloadData()
+//        }
+//        cell.photo.image = imageVV.image
+//        cell.configure(object: object)
         cell.linkDelegate = self
         return cell
     }
