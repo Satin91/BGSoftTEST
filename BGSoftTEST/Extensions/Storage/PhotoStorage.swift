@@ -25,16 +25,15 @@ class PhotoStorage {
     
     func loadPhoto(from url: String, completion: @escaping () -> Void) {
         guard let imageURL = URL(string: url) else { return }
-        let queue = DispatchQueue.global(qos: .background)
-        queue.async { [self] in
+        let queue = DispatchQueue.global(qos: .utility)
+        queue.sync { [self] in
             if PhotoStorage.imageCashe.object(forKey: url as NSString) == nil {
-                
             getData(from: imageURL) { data, response, error in
                 guard let data = data, error == nil else { return }
                 guard let image = UIImage(data: data)?.resized(withPercentage: 0.5) else { return }
-                DispatchQueue.main.async() {
+             //   DispatchQueue.main.async() {
                     PhotoStorage.imageCashe.setObject(image as UIImage, forKey: url as NSString)
-                }
+             //   }
             }
         }
         }
@@ -90,8 +89,8 @@ extension UIImageView {
             do {
                 let data = try Data(contentsOf: url)
                 let image = UIImage(data: data)?.resized(withPercentage: 0.5)
+                PhotoStorage.imageCashe.setObject(image!, forKey: imageUrl as NSString)
                 DispatchQueue.main.async {
-                    PhotoStorage.imageCashe.setObject(image!, forKey: imageUrl as NSString)
                     self?.image = image
                     completion(true)
                 }
