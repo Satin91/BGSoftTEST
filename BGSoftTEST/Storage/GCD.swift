@@ -9,20 +9,20 @@ import Foundation
 
 class Queue {
     
-    private static let labelIdentifier: String = "PhotoLoading"
-    private static let group = DispatchGroup()
-    
+    let labelIdentifier: String = "PhotoLoading"
     
     // MARK: Очередь для загрузки всех фото
     
-    static func PhotoLoading(_ priority: DispatchQoS ,complition: @escaping @convention(block) () -> Void) {
-        group.enter()
-        DispatchQueue(label: labelIdentifier,qos: priority,attributes: [.concurrent]).async(execute: complition)
+     func PhotoLoading(_ priority: DispatchQoS ,complition: @escaping @convention(block) () -> Void) {
+         DispatchQueue(label: labelIdentifier,qos: priority,attributes: .concurrent).async(execute: complition)
     }
     
     // MARK: Очередь для назначения фото в ячейку
     
-    static func AssignPhotoToCell(_ priority: DispatchQoS ,complition: @escaping @convention(block) () -> Void) {
-        DispatchQueue(label: labelIdentifier,qos: priority).async(execute: complition)
+     func AssignPhotoToCell(_ priority: DispatchQoS ,complition: @escaping @convention(block) () -> Void) {
+         DispatchQueue(label: labelIdentifier,qos: priority).sync(execute: complition)
     }
+    let oper = OperationQueue()
+    
 }
+

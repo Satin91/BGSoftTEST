@@ -6,7 +6,9 @@
 //
 
 import UIKit
-import CoreMotion
+
+
+
 
 class MainViewController: UIViewController {
     
@@ -15,9 +17,6 @@ class MainViewController: UIViewController {
     let photoStorage = PhotoStorage()
     private var photos  = [PhotoModel]()
     var timer = Timer()
-    
-    
-    
     var userIsSleeping = false {
         willSet {
             if newValue == false {
@@ -28,13 +27,17 @@ class MainViewController: UIViewController {
             }
         }
     }
+   
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
         photos = photoStorage.getPhotos()
+
         scrollToFirstItem(animated: false)
     }
+
     
     func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: false, block: { timer in
@@ -100,7 +103,6 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         let object = photos[indexPath.row]
         
         let imageVV = UIImageView()
-        
         imageVV.assignPhoto(imageUrl: object.imageURL) { _ in
             collectionView.reloadData()
         }
