@@ -14,7 +14,7 @@ class PhotoStorage {
     //: MARK: Кэш для фотографий
     
     static var imageCashe = NSCache<AnyObject,AnyObject>()
-
+    
     //: MARK: Создает очередь для загрузки фотографий
     
     fileprivate func getData(from url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
@@ -25,21 +25,18 @@ class PhotoStorage {
     
     func loadPhoto(from url: String, completion: @escaping () -> Void) {
         guard let imageURL = URL(string: url) else { return }
-        let queue = DispatchQueue.global(qos: .utility)
-        queue.sync { [self] in
+        Queue.PhotoLoading(.userInitiated) { [weak self] in
             if PhotoStorage.imageCashe.object(forKey: url as NSString) == nil {
-            getData(from: imageURL) { data, response, error in
-                guard let data = data, error == nil else { return }
-                guard let image = UIImage(data: data)?.resized(withPercentage: 0.5) else { return }
-             //   DispatchQueue.main.async() {
+                self?.getData(from: imageURL) { data, response, error in
+                    guard let data = data, error == nil else { return }
+                    guard let image = UIImage(data: data)?.resized(withPercentage: 0.5) else { return }
                     PhotoStorage.imageCashe.setObject(image as UIImage, forKey: url as NSString)
-             //   }
+                }
             }
-        }
         }
     }
     
-
+    
     
     //MARK: Возвращает массиив с моделями фотографий
     
@@ -62,6 +59,7 @@ class PhotoStorage {
                     self.loadPhoto(from: url) {
                     }
                     model.imageURL = url
+                    
                 }
                 
                 
@@ -73,7 +71,12 @@ class PhotoStorage {
         let firstHalf = sortedPhotoCollection
         // Добавляет первый элемент в конец массива для того, чтобы с него перешагнуть на первый ( такой же )
         sortedPhotoCollection.append(sortedPhotoCollection.first!)
-        return firstHalf + sortedPhotoCollection
+        let totalArray = firstHalf + sortedPhotoCollection
+        for (index, value ) in totalArray.enumerated() {
+            value.index = index
+        }
+                
+        return totalArray
     }
 }
 
@@ -85,7 +88,7 @@ extension UIImageView {
             self.image = image
             return
         }
-        DispatchQueue.global(qos: .userInteractive).async {  [weak self] in
+        Queue.AssignPhotoToCell(.userInteractive, complition: {  [weak self] in
             do {
                 let data = try Data(contentsOf: url)
                 let image = UIImage(data: data)?.resized(withPercentage: 0.5)
@@ -101,7 +104,7 @@ extension UIImageView {
                 }
                 
             }
-        }
+        })
     }
 }
 

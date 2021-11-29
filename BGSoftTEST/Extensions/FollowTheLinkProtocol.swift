@@ -7,6 +7,7 @@
 
 import Foundation
 
+//MARK: Делегат передает ссылку для webView
 
 protocol FollowTheLink {
     func openWebViewController(link: String)

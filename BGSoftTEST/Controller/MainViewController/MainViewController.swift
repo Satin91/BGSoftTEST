@@ -15,7 +15,7 @@ class MainViewController: UIViewController {
     let photoStorage = PhotoStorage()
     private var photos  = [PhotoModel]()
     var timer = Timer()
-   
+    
     
     
     var userIsSleeping = false {
@@ -28,11 +28,11 @@ class MainViewController: UIViewController {
             }
         }
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
-         
+        
         //timer.fire()
         photos = photoStorage.getPhotos()
         scrollToFirstItem(animated: false)
@@ -62,14 +62,16 @@ class MainViewController: UIViewController {
 
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        for i in indexPaths {
-            
-        }
     }
+    
+    
     
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         userIsSleeping = false
+        
+        //MARK: Parallax эффект
+        
         for cell in collectionView.visibleCells as! [PhotoCollectionViewCell] {
             cell.parallax(offsetPoint: self.collectionView.contentOffset)
         }
@@ -87,15 +89,23 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     
-    
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return photos.count
     }
     
+    // MARK: Проверка на видимость ячейки, для того чтобы исключить "Мерцание"
+    
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionViewCell.identifier, for: indexPath) as! PhotoCollectionViewCell
         let object = photos[indexPath.row]
+        
+        let imageVV = UIImageView()
+        
+        imageVV.loadPhoto(imageUrl: object.imageURL) { tr in
+            
+        }
+        cell.photo.image = imageVV.image
         cell.configure(object: object)
         cell.linkDelegate = self
         return cell

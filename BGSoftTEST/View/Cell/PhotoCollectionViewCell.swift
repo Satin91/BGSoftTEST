@@ -48,11 +48,11 @@ class PhotoCollectionViewCell: UICollectionViewCell{
         label.text   = object.user_name
         photoLink    = object.photo_url
         userLink     = object.user_url
-        photo.loadPhoto(imageUrl: object.imageURL, completion: { completion in
-                if completion == false {
-                    self.photo.image = UIImage(systemName: "photo.fill")?.applyingSymbolConfiguration(UIImage.SymbolConfiguration(pointSize: 26))
-                }
-        })
+//        photo.loadPhoto(imageUrl: object.imageURL, completion: { completion in
+//                if completion == false {
+//                    self.photo.image = UIImage(systemName: "photo.fill")?.applyingSymbolConfiguration(UIImage.SymbolConfiguration(pointSize: 26))
+//                }
+//        })
     }
     
     @objc func followTheUserLink(_ button: UIButton) {
