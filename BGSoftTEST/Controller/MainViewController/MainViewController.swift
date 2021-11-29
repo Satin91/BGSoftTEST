@@ -28,22 +28,26 @@ class MainViewController: UIViewController {
             }
         }
     }
-    
+    //MARK: Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
-        
-        //timer.fire()
         photos = photoStorage.getPhotos()
-        scrollToFirstItem(animated: false)
-        
+       
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        scrollToFirstItem(animated: false)
+    }
+    
     func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 6.0, repeats: false, block: { timer in
+        timer = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: false, block: { timer in
             self.scrollToFirstItem(animated: true)
         })
     }
     func scrollToFirstItem(animated: Bool) {
+        guard !photos.isEmpty else { return }
         self.collectionView.scrollToItem(at: IndexPath(item: photos.count / 2 , section: 0), at: .centeredVertically, animated: animated)
     }
     
@@ -102,8 +106,8 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         let imageVV = UIImageView()
         
-        imageVV.loadPhoto(imageUrl: object.imageURL) { tr in
-            
+        imageVV.assignPhoto(imageUrl: object.imageURL) { _ in
+            collectionView.reloadData()
         }
         cell.photo.image = imageVV.image
         cell.configure(object: object)

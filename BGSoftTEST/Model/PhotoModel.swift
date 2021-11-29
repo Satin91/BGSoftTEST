@@ -16,7 +16,6 @@ class PhotoModel {
     var photo_url: String = ""
     var user_name: String = ""
     var user_url:  String = ""
-    var index: Int = 0
     
     init(dictionary: [String: Any], name: String) {
         self.colors    = dictionary["colors"] as? [String] ?? []
