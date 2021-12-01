@@ -7,24 +7,55 @@
 
 import UIKit
 
-class ScaleFlowLayout: UICollectionViewFlowLayout {
+
+
+
+
+
+
+
+class ScaleFlowLayout: UICollectionViewFlowLayout, iPadLayout, iPhoneLayout {
+   
+    
+ 
+    var isCompact: Bool = false
+    
+    var isLandscape: Bool = false
+    
+    var spacing: CGFloat = 0.0
+    
+    var height: CGFloat = 0.0
     
     var activeDistance: CGFloat = 390
+    
     let zoomFactor: CGFloat = 0.15
     
     private let alpha: CGFloat = 0.7
-    
-    override func prepare() {
+ 
+    var multitasking: Bool = false
+
+    func standartLayout() {
         guard let collectionView = collectionView else { fatalError() }
-        scrollDirection = .horizontal
-        let spacing: CGFloat = 50
-        let height = collectionView.bounds.height
+        //let spacing: CGFloat = checkDeviceAndChangeSpacing()
+     
         self.activeDistance = collectionView.bounds.width
+        scrollDirection = .horizontal
         minimumLineSpacing = spacing * 2
         sectionInset = UIEdgeInsets(top: 50, left: spacing, bottom: 50, right: spacing)
-        itemSize = CGSize(width: collectionView.bounds.width - (spacing * 2), height: height * 0.7 )
+        itemSize = CGSize(width: collectionView.bounds.width - (spacing * 2), height: height )
+    }
+    
+    override func prepare() {
+        
+        if UIDevice.current.model == "iPad" {
+            iPadLayout()
+        } else {
+            iPhoneLayout()
+        }
+        standartLayout()
         
         super.prepare()
+        
     }
     
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
@@ -43,7 +74,7 @@ class ScaleFlowLayout: UICollectionViewFlowLayout {
                 let zoom = 1 + zoomFactor * (1 - normalizedDistance.magnitude)
                 
                 attributes.transform3D = CATransform3DMakeScale(zoom, zoom, 1)
-                                
+                
                 attributes.zIndex = Int(zoom.rounded())
             }
         }

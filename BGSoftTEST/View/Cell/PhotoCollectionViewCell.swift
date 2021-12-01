@@ -25,7 +25,7 @@ class PhotoCollectionViewCell: UICollectionViewCell{
     
     var userLinkButton: UIButton!
     var photoLinkButton: UIButton!
-    
+    var deleteButton: UIButton!
     var userLink: String? {
         willSet {
             userLinkButton.setTitle(newValue, for: .normal)
@@ -48,11 +48,6 @@ class PhotoCollectionViewCell: UICollectionViewCell{
         label.text   = object.user_name
         photoLink    = object.photo_url
         userLink     = object.user_url
-//        photo.loadPhoto(imageUrl: object.imageURL, completion: { completion in
-//                if completion == false {
-//                    self.photo.image = UIImage(systemName: "photo.fill")?.applyingSymbolConfiguration(UIImage.SymbolConfiguration(pointSize: 26))
-//                }
-//        })
     }
     
     @objc func followTheUserLink(_ button: UIButton) {
@@ -64,6 +59,14 @@ class PhotoCollectionViewCell: UICollectionViewCell{
         guard let photoLink = photoLink else { return }
         linkDelegate.openWebViewController(link: photoLink)
     }
+    
+    @objc func deletePhoto(_ button: UIButton) {
+        
+        buttonAction?()
+        
+    }
+    
+    var buttonAction: (() -> Void)?
     
     func parallax(offsetPoint:CGPoint) {
         let factor: CGFloat = 0.2
@@ -80,19 +83,29 @@ class PhotoCollectionViewCell: UICollectionViewCell{
         self.contentView.addSubview(photo)
         self.contentView.addSubview(label)
         self.contentView.addSubview(stackView)
+        self.contentView.addSubview(deleteButton)
     }
     
     func setupButtons() {
         userLinkButton = UIButton(frame: .zero)
         userLinkButton.addTarget(self, action: #selector(followTheUserLink(_:)), for: .touchUpInside)
         userLinkButton.titleLabel?.font = .systemFont(ofSize: 10)
-        userLinkButton.setTitleColor(.white, for: .normal)
+        userLinkButton.setTitleColor(.systemGray4, for: .normal)
         
         photoLinkButton = UIButton(frame: .zero)
         photoLinkButton.addTarget(self, action: #selector(followThePhotoLink(_:)), for: .touchUpInside)
         photoLinkButton.titleLabel?.font = .systemFont(ofSize: 10)
-        photoLinkButton.setTitleColor(.white, for: .normal)
+        photoLinkButton.setTitleColor(.systemGray4, for: .normal)
+        
+        deleteButton = UIButton(frame: .zero)
+        deleteButton.setImage(UIImage(systemName: "xmark.app.fill")?.applyingSymbolConfiguration(UIImage.SymbolConfiguration(pointSize: 40)) , for: .normal)
+        deleteButton.tintColor = .systemRed
+        deleteButton.backgroundColor = .clear
+        deleteButton.addTarget(self, action: #selector(deletePhoto(_:)), for: .touchUpInside)
     }
+    
+    
+ 
     
     func setupImageView() {
         photo = UIImageView(frame: self.bounds)
@@ -107,6 +120,7 @@ class PhotoCollectionViewCell: UICollectionViewCell{
     override func layoutSubviews() {
         super.layoutSubviews()
         setShadow()
+        self.photo.frame = self.bounds
         constraints()
     }
     

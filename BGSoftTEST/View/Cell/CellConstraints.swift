@@ -15,7 +15,7 @@ extension PhotoCollectionViewCell {
         self.userLinkButton.translatesAutoresizingMaskIntoConstraints = false
         self.stackView.translatesAutoresizingMaskIntoConstraints = false
         self.label.translatesAutoresizingMaskIntoConstraints = false
-        
+        self.deleteButton.translatesAutoresizingMaskIntoConstraints = false
         stackView.addArrangedSubview(photoLinkButton)
         stackView.addArrangedSubview(userLinkButton)
         stackView.distribution = .fillEqually
@@ -33,7 +33,12 @@ extension PhotoCollectionViewCell {
             label.topAnchor.constraint(equalTo: self.topAnchor,constant: 30),
             label.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 30),
             label.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: -30),
-
+            
+            // deleteButton constraints
+            deleteButton.widthAnchor.constraint(equalToConstant: 60),
+            deleteButton.heightAnchor.constraint(equalToConstant: 60),
+            deleteButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 20),
+            deleteButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
         ])
     }
 }
