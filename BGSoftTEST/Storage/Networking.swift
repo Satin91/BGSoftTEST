@@ -10,18 +10,27 @@ import UIKit
 
 class Networking {
     
-    var queueURLArray: [String] = []
+    
+    //MARK: Массив с адресами изображений которые в данный момент в очереди
+    
+    var queueForImageURLs: [String] = []
+    
+    //MARK: Кэш
     
     static var imageCashe = NSCache<AnyObject,AnyObject>()
+    
+    // MARK: Ставит в очередь, загружает фотографии
     
     func getData(from url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
         URLSession.shared.dataTask(with: url, completionHandler: completion).resume()
     }
     
+    // MARK: Получает фотографию, если таковая имеется
+    
     func downloadImage(from url: String, completion: @escaping (UIImage?) -> Void ) {
         // Запрещает загружать копию
-        guard !queueURLArray.contains(url) else { return }
-        queueURLArray.append(url)
+        guard !queueForImageURLs.contains(url) else { return }
+        queueForImageURLs.append(url)
         Queue.PhotoLoading(.userInitiated) {
             let imageURL = URL(string: url)
             self.getData(from: imageURL!) { data, response, error in

@@ -9,6 +9,7 @@ import Foundation
 
 
 
+
 class AsyncOperation: Operation {
     
     public enum State: String {

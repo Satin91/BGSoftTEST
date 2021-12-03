@@ -12,39 +12,32 @@ extension MainViewController {
     
     // MARK: Поиск парных фотографий
     
-    fileprivate func findAndRemoveItems(name: String) -> [IndexPath] {
+    fileprivate func findAndRemoveItems(row: Int) -> [IndexPath] {
         var indexes: [IndexPath] = []
-        for (index,value) in self.photos.enumerated() {
-            if value.name == name {
-                indexes.append(IndexPath(item: index, section: 0))
-            }
+
+        // Получает индексы всех одинаковых фотографий
+        for i in stride(from: row, to: self.photos.count  * factor, by: self.photos.count ) {
+            indexes.append(IndexPath(row: i, section: 0))
         }
-        print("removing indexes is \(indexes.count)")
-       
         return indexes
     }
-  
+    
     // MARK: Удаление ячеек
     
-    func showAlert(name: String) {
+    func showAlert(row: Int) {
         
         let alertController = UIAlertController(title: "Удалить фото?", message: "Фотография будет удалена", preferredStyle: .alert)
-        let deleteAction = UIAlertAction(title: "Удалить?", style: .destructive) { _ in
-           
-            self.collectionView.performBatchUpdates {
-                
-                self.collectionView.deleteItems(at: self.findAndRemoveItems(name: name))
-                self.photoStorage.photos.removeAll { photo in
-                    print("remove this photo \(photo.name)")
-                    return photo.name == name
-                }
-                self.photos = self.photoStorage.createEndlessСarousel()
-              
-            } completion: { [self] completion in
-              //  collectionView.reloadData()
-                collectionView.reloadItems(at: findAndRemoveItems(name: name) )
-                
+        let deleteAction = UIAlertAction(title: "Удалить?", style: .destructive) { _ in [self]
+            let scrollIndex = IndexPath(item: self.currentIndexPath.row - (self.findAndRemoveItems(row: row).count / 2), section: 0)
+            if self.compositionalLayoutIsUsing {
+                self.collectionView.scrollToItem(at:  scrollIndex, at: .centeredVertically, animated: true)
             }
+            self.collectionView.performBatchUpdates {
+                self.collectionView.deleteItems(at: self.findAndRemoveItems(row: row))
+                
+                 self.photos.remove(at: row)
+            } 
+            
         }
         let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
         alertController.addAction(deleteAction)

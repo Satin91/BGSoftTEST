@@ -9,7 +9,7 @@ import UIKit
 
 
 class PhotoModel {
-    
+ 
     var name : String = ""
     var colors: [String] = []
     var imageURL: String = ""

@@ -18,8 +18,6 @@ class PhotoModelController {
     public var photos: [PhotoModel] = []
     
     private let networking = Networking()
-    // MARK: Очередь для загрузки фотографий
-    
     
     init() {
         self.getModelArray()
@@ -44,8 +42,7 @@ class PhotoModelController {
         
         array[location...lenght].forEach { object in
             networking.downloadImage(from: object.imageURL) { image in
-                print("image did load \(object.imageURL)")
-        }
+            }
         }
     }
     
@@ -54,6 +51,7 @@ class PhotoModelController {
     
     func getModelArray(){
         var sortedPhotoCollection: [PhotoModel] = []
+        
         do {
             if let file = URL(string: jsonFileURL) {
                 let data = try Data(contentsOf: file)
@@ -61,11 +59,13 @@ class PhotoModelController {
                 guard let object = json as? [String: Any] else { return }
                 var counter = 0
                 for dict in object {
-                    guard counter <= 5 else { break }
+                    guard counter <= 50 else { break }
                     let photoModel = PhotoModel(dictionary: dict.value as! [String:Any], name: dict.key)
                     let url = heading + dict.key + ".jpg"
                     photoModel.imageURL = url
                     sortedPhotoCollection.append(photoModel)
+                    
+                    
                     counter += 1
                 }
                 // Сортировка по имени
@@ -74,37 +74,32 @@ class PhotoModelController {
         } catch {
             print(error.localizedDescription)
         }
+        print(sortedPhotoCollection.count)
         self.photos = sortedPhotoCollection
-    }
-    
-    //MARK: Метод создает "бесконечный" массив
-    
-    func createEndlessСarousel() -> [PhotoModel] {
-        var secondHalf = photos
-        let firstHalf = secondHalf
-        secondHalf.append(photos.first!)
-        let totalArray = firstHalf + secondHalf
-        return totalArray
     }
     
 }
 
 extension UIImageView {
+    
+    //MARK: Расширение для загрузки изображения. Если то еще не загружено, запускается очередь с completion блоком который служит уведомлением для коллекции о том, что нужно обновить данные
+    
     func loadPhoto(imageUrl: String, completion: @escaping (Bool)-> Void ) {
+        let networking = Networking()
         
         if let photo = Networking.imageCashe.object(forKey: imageUrl as NSString) as? UIImage  {
             self.image = photo
             return
         } else {
-            let networking = Networking()
+            
             networking.downloadImage(from: imageUrl) { image in
-                    guard let image = image  else {
-                        return
-                    }
-                    DispatchQueue.main.async {
-                        self.image = image
-                        completion(true)
-                    }
+                guard let image = image  else {
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.image = image
+                    completion(true)
+                }
             }
         }
         

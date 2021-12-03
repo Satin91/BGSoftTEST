@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PhotoCollectionViewCell: UICollectionViewCell{
+class PhotoCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "PhotoCell"
     let radius: CGFloat = 26
@@ -22,10 +22,11 @@ class PhotoCollectionViewCell: UICollectionViewCell{
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
-    
+    var imageUrl: String = ""
     var userLinkButton: UIButton!
     var photoLinkButton: UIButton!
     var deleteButton: UIButton!
+   // var imageFrame: CGRect?
     var userLink: String? {
         willSet {
             userLinkButton.setTitle(newValue, for: .normal)
@@ -36,18 +37,33 @@ class PhotoCollectionViewCell: UICollectionViewCell{
             photoLinkButton.setTitle(newValue, for: .normal)
         }
     }
-  
+//    override func prepareForReuse() {
+//        super.prepareForReuse()
+//        self.imageFrame = self.bounds
+//        self.imageFrame?.origin.x -= 6
+//        self.layoutSubviews()
+//    }
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupImageView()
         setupButtons()
         setupView()
+        constraints()
     }
-
+ 
     func configure(object: PhotoModel) {
         label.text   = object.user_name
         photoLink    = object.photo_url
         userLink     = object.user_url
+        
+        
+    }
+    func updateImageToThis(image: UIImage?) {
+        guard let image = image else {
+            photo.image = nil
+            return
+        }
+        photo.image = image
     }
     
     @objc func followTheUserLink(_ button: UIButton) {
@@ -61,7 +77,6 @@ class PhotoCollectionViewCell: UICollectionViewCell{
     }
     
     @objc func deletePhoto(_ button: UIButton) {
-        
         buttonAction?()
         
     }
@@ -120,9 +135,9 @@ class PhotoCollectionViewCell: UICollectionViewCell{
     override func layoutSubviews() {
         super.layoutSubviews()
         setShadow()
-        self.photo.frame = self.bounds
-        constraints()
+      
     }
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

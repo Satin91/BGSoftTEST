@@ -14,10 +14,12 @@ import UIKit
 
 
 
-class ScaleFlowLayout: UICollectionViewFlowLayout, iPadLayout, iPhoneLayout {
-   
+class HorizontalPagingLayout: UICollectionViewFlowLayout, LayoutSize {
     
- 
+    var width: CGFloat = 0.0
+    
+    var fourItems: Bool = false
+    
     var isCompact: Bool = false
     
     var isLandscape: Bool = false
@@ -31,31 +33,30 @@ class ScaleFlowLayout: UICollectionViewFlowLayout, iPadLayout, iPhoneLayout {
     let zoomFactor: CGFloat = 0.15
     
     private let alpha: CGFloat = 0.7
- 
+    
     var multitasking: Bool = false
-
-    func standartLayout() {
+    
+    func calculateLayout() {
         guard let collectionView = collectionView else { fatalError() }
-        //let spacing: CGFloat = checkDeviceAndChangeSpacing()
-     
+        
         self.activeDistance = collectionView.bounds.width
         scrollDirection = .horizontal
         minimumLineSpacing = spacing * 2
         sectionInset = UIEdgeInsets(top: 50, left: spacing, bottom: 50, right: spacing)
-        itemSize = CGSize(width: collectionView.bounds.width - (spacing * 2), height: height )
+        itemSize = CGSize(width: width - (spacing * 2), height: height )
     }
     
     override func prepare() {
+        print(height)
         
         if UIDevice.current.model == "iPad" {
-            iPadLayout()
+            iPadValues()
         } else {
-            iPhoneLayout()
+            iPhoneValues()
         }
-        standartLayout()
         
+        calculateLayout()
         super.prepare()
-        
     }
     
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
@@ -95,6 +96,7 @@ class ScaleFlowLayout: UICollectionViewFlowLayout, iPadLayout, iPhoneLayout {
         let alpha = ratio * (1 - alpha) + alpha
         attributes.alpha = alpha
     }
+
     
     override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         // Invalidate layout so that every cell get a chance to be zoomed when it reaches the center of the screen
