@@ -8,12 +8,15 @@
 import UIKit
 
 class PhotoCollectionViewCell: UICollectionViewCell {
+  
+    
     
     static let identifier = "PhotoCell"
     let radius: CGFloat = 26
     var photo: UIImageView!
     var stackView = UIStackView()
     var linkDelegate: FollowTheLink!
+    var useParallax: Bool = false
     lazy var label: UILabel = {
         let label = UILabel()
         label.textColor = .systemGray3
@@ -26,6 +29,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     var userLinkButton: UIButton!
     var photoLinkButton: UIButton!
     var deleteButton: UIButton!
+    var photoCenterAncher: NSLayoutConstraint!
    // var imageFrame: CGRect?
     var userLink: String? {
         willSet {
@@ -37,24 +41,26 @@ class PhotoCollectionViewCell: UICollectionViewCell {
             photoLinkButton.setTitle(newValue, for: .normal)
         }
     }
-//    override func prepareForReuse() {
-//        super.prepareForReuse()
-//        self.imageFrame = self.bounds
-//        self.imageFrame?.origin.x -= 6
-//        self.layoutSubviews()
-//    }
+
+    override var frame: CGRect {
+        didSet {
+            print("newValue is \(frame)")
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupImageView()
         setupButtons()
+        setupImageView()
         setupView()
-        constraints()
+        constraints()   
     }
- 
-    func configure(object: PhotoModel) {
+   
+    func configure(object: PhotoModel, parallax: Bool) {
         label.text   = object.user_name
         photoLink    = object.photo_url
         userLink     = object.user_url
+        useParallax  = parallax
         
         
     }
@@ -83,12 +89,13 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     
     var buttonAction: (() -> Void)?
     
+    var imageFrame: CGRect?
     func parallax(offsetPoint:CGPoint) {
         let factor: CGFloat = 0.2
         let offsetX = (offsetPoint.x - self.frame.origin.x) * factor
-        let frame = photo.bounds
+        let frame = self.bounds
         let offsetFame = frame.offsetBy(dx: CGFloat(offsetX), dy: CGFloat(0))
-        photo.frame = offsetFame
+        self.imageFrame = offsetFame
     }
 
     func setupView() {
@@ -120,8 +127,6 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     }
     
     
- 
-    
     func setupImageView() {
         photo = UIImageView(frame: self.bounds)
         photo.contentMode = .scaleAspectFill
@@ -135,7 +140,15 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         setShadow()
-      
+        if self.useParallax {
+            if self.imageFrame != nil {
+                self.photo.frame = self.imageFrame!
+            } else {
+                self.photo.frame = self.bounds
+            }
+        } else {
+            self.photo.frame = self.bounds
+        }
     }
 
     

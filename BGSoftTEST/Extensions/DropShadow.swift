@@ -7,6 +7,9 @@
 
 import UIKit
 
+
+//MARK: Тень для ячейки
+
 extension UIView {
     func dropShadow(color: UIColor, opacity: Float = 0.4, offSet: CGSize, radius: CGFloat = 5, scale: Bool = true) {
         layer.masksToBounds = false

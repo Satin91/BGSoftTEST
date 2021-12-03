@@ -8,22 +8,10 @@
 import UIKit
 
 
-func loadPhotos(url: String, completion: @escaping (UIImage?) -> Void) {
-    
-    
-    
-    let queue = OperationQueue()
-    queue.qualityOfService = .userInteractive
-    queue.maxConcurrentOperationCount = 4
-    //queue.isSuspended = true
-    let imageOperation = ImageLoadOperation(url: url) { image in
-        print("Загрузка началась")
-        guard let image = image?.resized(withPercentage: 0.5) else { return }
-        Networking.imageCashe.setObject(image, forKey: url as NSString)
-        print("Загрузка закончилась")
-    }
-    queue.addOperation(imageOperation)
-}
+
+
+
+// MARK: В данный момент не используется
 
 class ImageLoadOperation: AsyncOperation {
     private var url: String?
@@ -61,3 +49,17 @@ class ImageLoadOperation: AsyncOperation {
 }
 
 
+//func loadPhotos(url: String, completion: @escaping (UIImage?) -> Void) {
+//
+//    let queue = OperationQueue()
+//    queue.qualityOfService = .userInteractive
+//    queue.maxConcurrentOperationCount = 4
+//    //queue.isSuspended = true
+//    let imageOperation = ImageLoadOperation(url: url) { image in
+//        print("Загрузка началась")
+//        guard let image = image?.resized(withPercentage: 0.5) else { return }
+//        Networking.imageCashe.setObject(image, forKey: url as NSString)
+//        print("Загрузка закончилась")
+//    }
+//    queue.addOperation(imageOperation)
+//}

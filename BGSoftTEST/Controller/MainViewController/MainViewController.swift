@@ -9,29 +9,43 @@ import UIKit
 import CoreMotion
 
 
+protocol LayoutIsCompositional {
+    var compositionalLayoutIsUsing: Bool { get set }
+}
 
-class MainViewController: UIViewController {
+class MainViewController: UIViewController{
     
- 
+    // Layouts
+    let scaleLayout = HorizontalPagingLayout() // Layout с анимацией увеличения ячейки
+    var composLayout: CompositionalLayout?     // Layout для отображения четырех ячеек
     
-    var compositionalLayoutIsUsing: Bool = false
-    var collectionView: PhotoCollectionView!
+    // Используется ли в данный момент compositional layout
+    var compositionalLayoutIsUsing: Bool = false {
+        didSet {
+            self.parallaxIsUsed = !compositionalLayoutIsUsing
+        }
+    }
+    
+    // Так как UIImageView в ячейке не привязан констрейнтами, нужно отслеживать состояние когда его фрейму нужно привязаться к ячейке в момент обновления лейаута, или быть изменяемым для параллакса
+    private var parallaxIsUsed: Bool = true
+    
+    // Свойство содержит текущий индекс и нужен для скрола к нему в момент смены ориентации или лейаута
     var currentIndexPath: IndexPath = IndexPath(row: 0, section: 0)
     
-    let photoStorage = PhotoModelController()
-    let scaleLayout = HorizontalPagingLayout()
-    var composLayout: CompositionalLayout?
+    // Экземпляр класса с методами, которые работают с моделью
+    private let photoStorage = PhotoModelController()
+    
+    // Множитель который дает произведение количества ячеек для "бесконечной" прокрутки
     let factor = 10
+    
     // Блюр используется во время переключения layout'а коллекции
     var blur = UIVisualEffectView(effect: UIBlurEffect(style: .prominent) )
     
-   
-    
+    var collectionView: PhotoCollectionView!
     var photos = [PhotoModel]()
-    var photosCount: Int?
     
+    // Таймер запускается в момент бездействия пользователя
     private var timer = Timer()
-    
     var userIsSleeping = false {
         willSet {
             if newValue == false {
@@ -46,10 +60,7 @@ class MainViewController: UIViewController {
    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Получение сортированного массива фотографий
         photoStorage.getModelArray()
-        // Присвоение массива классовой переменной
         photos = photoStorage.photos
         setupCollectionView()
         constraints()
@@ -58,14 +69,12 @@ class MainViewController: UIViewController {
         addPinchGesture()
     }
     
-    
-   
-    
     func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 15.0, repeats: false, block: { timer in
             self.scrollToFirstItem(animated: true)
         })
     }
+    
     func addBlurToView() {
         self.blur.frame = self.view.bounds
         self.view.addSubview(blur)
@@ -82,7 +91,7 @@ class MainViewController: UIViewController {
     func setupCollectionView() {
         
         collectionView = PhotoCollectionView(frame: self.view.bounds, collectionViewLayout: scaleLayout)
-        self.composLayout = CompositionalLayout(collectionView: collectionView)
+        self.composLayout = CompositionalLayout(collectionView: self.collectionView)
         self.view.addSubview(collectionView)
         collectionView.backgroundColor = .systemGray4
         collectionView.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
@@ -90,53 +99,45 @@ class MainViewController: UIViewController {
         collectionView.dataSource = self
         composLayout?.sendIndexDelegate = self
     }
-   // работает на iPad
-//    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-//        super.viewWillTransition(to: size, with: coordinator)
-//        print(#function)
-//        self.scaleLayout.isLandscape = UIDevice.current.orientation.isLandscape
-//        DispatchQueue.main.async { [self] in
-//            collectionView.scrollToItem(at: self.currentIndexPath, at: .centeredHorizontally, animated: false)
-//        }
-//    }
-    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.willTransition(to: newCollection, with: coordinator)
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
         print(#function)
+       
         self.scaleLayout.isLandscape  = UIDevice.current.orientation.isLandscape
         self.composLayout?.isLandscape = UIDevice.current.orientation.isLandscape
+        self.parallaxIsUsed = false
+        
         DispatchQueue.main.async { [self] in
-            print(currentIndexPath)
             collectionView.scrollToItem(at: self.currentIndexPath, at: .centeredVertically, animated: false)
         }
     }
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         if traitCollection.horizontalSizeClass == .compact {
             // Происходит когда в айпаде открывают мультитаскинг
-            collectionView.layout.isCompact = true
+            self.scaleLayout.isCompact = true
         } else {
             // обычное состояние
-            collectionView.layout.isCompact = false
+            self.scaleLayout.isCompact = false
         }
     }
 }
 
+// MARK: Delegate/Datasource
+
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    
-    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        
         userIsSleeping = true
-        
-        if collectionView.indexPathsForVisibleItems.first!.row == 0 {
+        if collectionView.indexPathsForVisibleItems.first?.row == 0 {
             scrollToFirstItem(animated: false)
         }
     }
     
-    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         userIsSleeping = false
-        print(currentIndexPath)
+        // Параллакс эффект
         for cell in collectionView.visibleCells as! [PhotoCollectionViewCell] {
             cell.parallax(offsetPoint: self.collectionView.contentOffset)
         }
@@ -144,8 +145,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
                                         y: self.collectionView.center.y + self.collectionView.contentOffset.y)
         
         guard let index = collectionView.indexPathForItem(at: centerPoint) else { return }
-        
-        // Блокировка назначения действующего индекса в момент смены ориентации
+        guard let cell = collectionView.cellForItem(at: index) as? PhotoCollectionViewCell else { return }
+        cell.useParallax = self.parallaxIsUsed
+        // Блокировка назначения текущего индекса в момент смены ориентации
         guard index != IndexPath(item: 0, section: 0) && !(index.row < currentIndexPath.row - 2) && !(index.row > currentIndexPath.row + 2)  else { return }
         currentIndexPath = index
         
@@ -155,16 +157,14 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         return photos.count * factor
     }
     
-    
-    // MARK: Загрузка происходит в этом методе чтобы исключить "Мерцание" фотографий
-    
+    // Загрузка фотографии происходит в этом методе чтобы исключить "Мерцание" фотографий
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         
         guard let cell = cell as? PhotoCollectionViewCell else { return }
+        let actualIndex = indexPath.row % photos.count
         let object = photos[indexPath.row % photos.count]
-        
         let imageVV = UIImageView()
-        cell.imageUrl = object.imageURL
+        self.photoStorage.loadAdjacentPhotos(currentIndex: actualIndex , from: self.photos)
         imageVV.loadPhoto(imageUrl: object.imageURL) { isLoaded in
             if isLoaded {
                 if cell.imageUrl == object.imageURL {
@@ -174,33 +174,29 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         }
         cell.photo.image = imageVV.image
     }
-    
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionViewCell.identifier, for: indexPath) as! PhotoCollectionViewCell
         let actualIndex = indexPath.row % photos.count
         let object = photos[actualIndex]
+        
         cell.buttonAction = { [weak self] in
             guard let self = self else { return }
             self.currentIndexPath = indexPath
-            self.showAlert(row: actualIndex)
+            self.showDeletionAlert(row: actualIndex)
         }
-
-        cell.configure(object: object)
+        cell.imageUrl = object.imageURL
+        cell.configure(object: object, parallax: self.parallaxIsUsed)
         cell.linkDelegate = self
         return cell
     }
-
+    
 }
 
-
+//MARK: Получение действующего индекса из compositional layout
 
 extension MainViewController: CompositionalFirstIndex {
-    func sendValueOf(indexPath: IndexPath) {
-        
-        // Блокировка назначения действующего индекса в момент смены ориентации
-        self.currentIndexPath = indexPath
+    func sendValueOf(firstIndexPath: IndexPath) {
+        self.currentIndexPath = firstIndexPath
     }
-    
-    
 }

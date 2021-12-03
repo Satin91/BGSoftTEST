@@ -14,5 +14,4 @@ class Queue {
     static func PhotoLoading(_ priority: DispatchQoS ,complition: @escaping @convention(block) () -> Void) {
         DispatchQueue(label: labelIdentifier,qos: priority,attributes: [.concurrent]).async(execute: complition)
     }
- 
 }

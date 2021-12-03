@@ -23,32 +23,10 @@ class PhotoModelController {
         self.getModelArray()
     }
     
-    // MARK: Загружает фотографии стоящие рядом с той, которая перед глазами
-    
-    func loadAdjacentPhotos(currentIndex: IndexPath, from array: [PhotoModel] ) {
-        var location: Int = 0
-        var lenght : Int = 10
-        
-        if currentIndex.row - 4 >= 0 {
-            location = currentIndex.row - 4
-        } else {
-            location = currentIndex.row
-        }
-        if currentIndex.row + 4 <= array.count - 1 {
-            lenght = currentIndex.row + 4
-        } else {
-            lenght = array.count - 1
-        }
-        
-        array[location...lenght].forEach { object in
-            networking.downloadImage(from: object.imageURL) { image in
-            }
-        }
-    }
+
     
     
-    // MARK: Создает массив моделей / парсит данные
-    
+    // Создает массив моделей / парсит данные
     func getModelArray(){
         var sortedPhotoCollection: [PhotoModel] = []
         
@@ -57,16 +35,11 @@ class PhotoModelController {
                 let data = try Data(contentsOf: file)
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
                 guard let object = json as? [String: Any] else { return }
-                var counter = 0
                 for dict in object {
-                    guard counter <= 50 else { break }
                     let photoModel = PhotoModel(dictionary: dict.value as! [String:Any], name: dict.key)
                     let url = heading + dict.key + ".jpg"
                     photoModel.imageURL = url
                     sortedPhotoCollection.append(photoModel)
-                    
-                    
-                    counter += 1
                 }
                 // Сортировка по имени
                 sortedPhotoCollection.sort{ ($0.user_name < $1.user_name) }
@@ -78,11 +51,32 @@ class PhotoModelController {
         self.photos = sortedPhotoCollection
     }
     
+    // Загружает фотографии стоящие по соседству с той, которая перед глазами
+    func loadAdjacentPhotos(currentIndex: Int, from array: [PhotoModel] ) {
+        var location: Int = 0
+        var lenght : Int = 10
+        
+        if currentIndex - 4 >= 0 {
+            location = currentIndex - 4
+        } else {
+            location = currentIndex
+        }
+        if currentIndex + 4 <= array.count - 1 {
+            lenght = currentIndex + 4
+        } else {
+            lenght = array.count - 1
+        }
+        
+        array[location...lenght].forEach { object in
+            networking.downloadImage(from: object.imageURL) { image in
+            }
+        }
+    }
 }
 
+// Расширение для загрузки изображения. Если то еще не загружено, запускается очередь с completion блоком который служит уведомлением для коллекции о том, что нужно обновить данные
+
 extension UIImageView {
-    
-    //MARK: Расширение для загрузки изображения. Если то еще не загружено, запускается очередь с completion блоком который служит уведомлением для коллекции о том, что нужно обновить данные
     
     func loadPhoto(imageUrl: String, completion: @escaping (Bool)-> Void ) {
         let networking = Networking()

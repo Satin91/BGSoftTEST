@@ -7,15 +7,12 @@
 
 import UIKit
 
-protocol CompositionalFirstIndex {
-    func sendValueOf(indexPath: IndexPath)
-}
 
-    
+
 class CompositionalLayout: UICollectionViewLayout, UIScrollViewDelegate{
     
     var layout = UICollectionViewLayout()
-    var collView: UICollectionView?
+    var photoCollectionView: UICollectionView?
     var isLandscape: Bool = false {
         willSet {
             if newValue == true {
@@ -26,7 +23,7 @@ class CompositionalLayout: UICollectionViewLayout, UIScrollViewDelegate{
     var spacing: CGFloat = 0
     init(collectionView: UICollectionView) {
         super.init()
-        self.collView = collectionView
+        self.photoCollectionView = collectionView
         self.layout = createLayout()
     }
     var sendIndexDelegate: CompositionalFirstIndex!
@@ -42,61 +39,59 @@ class CompositionalLayout: UICollectionViewLayout, UIScrollViewDelegate{
     
     
     func createLayout() -> UICollectionViewLayout {
+        guard let collectionView = self.photoCollectionView else { return UICollectionViewLayout() }
+        collectionView.alwaysBounceVertical = false
         
         let layout = UICollectionViewCompositionalLayout { [self] (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
             
-            var trailingItem: NSCollectionLayoutItem!
+            var item: NSCollectionLayoutItem!
             // Сама ячейка
-            trailingItem = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
-           
+            item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
+            
             if UIDevice.current.model == "iPad" {
                 spacing = 45
             } else {
                 spacing = 15
             }
-//
             
             // Горизонтальная группа из двух ячеек
             
-            let subGroup = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0)), subitem: trailingItem, count: 2)
-            subGroup.interItemSpacing = NSCollectionLayoutSpacing.fixed(spacing)
-    
+            let horizontalGroup = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0)), subitem: item, count: 2)
+            horizontalGroup.interItemSpacing = NSCollectionLayoutSpacing.fixed(spacing)
+            
             // Вертикальная группа состоящая из двух горизонтальных групп
             
-            let trailingGroup = NSCollectionLayoutGroup.vertical(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(self.collView!.bounds.width - spacing * 2), heightDimension: .fractionalHeight(1.0)), subitem: subGroup, count: 2)
-            trailingGroup.interItemSpacing = NSCollectionLayoutSpacing.fixed(spacing)
- 
-            collView?.alwaysBounceVertical = false
-            let section = NSCollectionLayoutSection(group: trailingGroup)
+            let verticalGroup = NSCollectionLayoutGroup.vertical(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(collectionView.bounds.width - spacing * 2), heightDimension: .fractionalHeight(1.0)), subitem: horizontalGroup, count: 2)
+            verticalGroup.interItemSpacing = NSCollectionLayoutSpacing.fixed(spacing)
+            
+            
+            let section = NSCollectionLayoutSection(group: verticalGroup)
             section.interGroupSpacing = spacing * 2
             section.contentInsets = NSDirectionalEdgeInsets(top: spacing * 2, leading: spacing, bottom: spacing * 2, trailing: spacing * 5)
             section.orthogonalScrollingBehavior = .groupPaging
             
+            // Так как у compositional layout нет связи с методами делегата scrollView требуется отправлять данные отсюда
             section.visibleItemsInvalidationHandler = { visibleItems, point, environment in
                 sendFirstIndexPathInPage(at: point)
-                
-        }
+            }
             return section
-    }
+        }
         return layout
-}
+    }
 }
 extension CompositionalLayout {
     
-    func sendFirstIndexPathInPage(at point: CGPoint) {
-        
-        let width = collView?.bounds.width
-        
+    func sendFirstIndexPathInPage(at compositionalPoint: CGPoint) {
+        guard let collectionView = self.photoCollectionView else { return }
+        let collectionWidth = collectionView.bounds.width
         var currentXPoint: CGFloat = 0
-        
-        
-    if point.x >= currentXPoint + width! || point.x <= currentXPoint - width! {
-        // Координаты верхней левой ячейки
-        let point = CGPoint(x: collView!.bounds.width / 3, y: self.collView!.bounds.height / 3)
-        guard let index = collView?.indexPathForItem(at: point) else { return }
-        currentXPoint = point.x
-        sendIndexDelegate.sendValueOf(indexPath: index)
-    }
+        if compositionalPoint.x >= currentXPoint + collectionWidth || compositionalPoint.x <= currentXPoint - collectionWidth {
+            // Координаты верхней левой ячейки
+            let pointForIndex = CGPoint(x: collectionWidth / 3, y: collectionView.bounds.height / 3)
+            guard let index = collectionView.indexPathForItem(at: pointForIndex) else { return }
+            currentXPoint = pointForIndex.x
+            sendIndexDelegate.sendValueOf(firstIndexPath: index)
+        }
         
     }
 }

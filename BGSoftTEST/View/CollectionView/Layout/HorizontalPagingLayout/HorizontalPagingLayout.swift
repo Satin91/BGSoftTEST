@@ -16,6 +16,9 @@ import UIKit
 
 class HorizontalPagingLayout: UICollectionViewFlowLayout, LayoutSize {
     
+    
+    // MARK: Свойства протокола
+    
     var width: CGFloat = 0.0
     
     var fourItems: Bool = false
@@ -28,24 +31,17 @@ class HorizontalPagingLayout: UICollectionViewFlowLayout, LayoutSize {
     
     var height: CGFloat = 0.0
     
+    var multitasking: Bool = false
+    
+    // MARK: Свойства класса
+    
     var activeDistance: CGFloat = 390
     
     let zoomFactor: CGFloat = 0.15
     
     private let alpha: CGFloat = 0.7
     
-    var multitasking: Bool = false
-    
-    func calculateLayout() {
-        guard let collectionView = collectionView else { fatalError() }
-        
-        self.activeDistance = collectionView.bounds.width
-        scrollDirection = .horizontal
-        minimumLineSpacing = spacing * 2
-        sectionInset = UIEdgeInsets(top: 50, left: spacing, bottom: 50, right: spacing)
-        itemSize = CGSize(width: width - (spacing * 2), height: height )
-    }
-    
+
     override func prepare() {
         print(height)
         
@@ -58,6 +54,18 @@ class HorizontalPagingLayout: UICollectionViewFlowLayout, LayoutSize {
         calculateLayout()
         super.prepare()
     }
+    
+    
+    // Рассчет лейаута на основании свойств протокола
+    func calculateLayout() {
+        guard let collectionView = collectionView else { fatalError() }
+        self.activeDistance = collectionView.bounds.width
+        scrollDirection = .horizontal
+        minimumLineSpacing = spacing * 2
+        sectionInset = UIEdgeInsets(top: 50, left: spacing, bottom: 50, right: spacing)
+        itemSize = CGSize(width: width - (spacing * 2), height: height )
+    }
+    
     
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         guard let collectionView = collectionView else { return nil }

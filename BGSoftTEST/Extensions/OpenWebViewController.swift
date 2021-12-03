@@ -8,6 +8,9 @@
 
 import UIKit
 
+
+//MARK: Открывает WebView
+
 extension MainViewController: FollowTheLink {
     
     func openWebViewController(link: String) {

@@ -8,7 +8,7 @@
 import Foundation
 
 
-
+// MARK: В данный момент не используется
 
 class AsyncOperation: Operation {
     

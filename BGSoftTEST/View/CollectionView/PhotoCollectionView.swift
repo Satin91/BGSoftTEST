@@ -10,7 +10,7 @@ import UIKit
 
 class PhotoCollectionView: UICollectionView {
     
-    var layout = HorizontalPagingLayout()
+    
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
         setupCollectionView()
@@ -18,12 +18,8 @@ class PhotoCollectionView: UICollectionView {
 
     func setupCollectionView() {
         self.isPagingEnabled = true
-    //    self.collectionViewLayout = layout
     }
-    override func layoutSubviews() {
-        super.layoutSubviews()
-            //setupCollectionView()
-    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

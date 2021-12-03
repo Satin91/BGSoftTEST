@@ -8,6 +8,7 @@
 import UIKit
 
 
+//MARK: Свойства
 
 protocol LayoutSize: UICollectionViewLayout {
     var isCompact: Bool { get set }
@@ -19,6 +20,7 @@ protocol LayoutSize: UICollectionViewLayout {
     func iPadValues()
 }
 
+//MARK: Реализация
 
 extension LayoutSize {
     
